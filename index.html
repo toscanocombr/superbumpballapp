@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Bump Ball - Mobile Game</title>
+    <meta name="description" content="Super Bump Ball: Bounce, score, win!">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YJMJSXW4TH"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-YJMJSXW4TH');
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #fff;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Grid background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        /* Floating decorative elements */
+        .decoration {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .decoration:nth-child(1) {
+            width: 60px;
+            height: 60px;
+            top: 10%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+
+        .decoration:nth-child(2) {
+            width: 40px;
+            height: 40px;
+            top: 60%;
+            right: 5%;
+            animation-delay: 2s;
+        }
+
+        .decoration:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            top: 80%;
+            left: 5%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Main content layout */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 80px 0;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+            width: 100%;
+        }
+
+        .hero-left {
+            z-index: 20;
+        }
+
+        .hero-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 2.4rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .logo-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* User avatars section */
+        .user-avatars {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .avatars-group {
+            display: flex;
+            margin-right: 1rem;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            margin-right: -10px;
+            object-fit: cover;
+        }
+
+        .play-button {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .play-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .play-button::after {
+            content: '▶';
+            color: white;
+            font-size: 18px;
+            margin-left: 3px;
+        }
+
+        .user-stats {
+            margin-bottom: 2rem;
+        }
+
+        .user-count {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+
+        /* Download buttons */
+        .download-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .store-button {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            min-width: 180px;
+        }
+
+        .store-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .store-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Phone mockup section */
+        .hero-right {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .phone-mockup {
+            position: relative;
+            width: 320px;
+            height: 640px;
+            background: #000;
+            border-radius: 45px;
+            padding: 12px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+            z-index: 15;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            border-radius: 35px;
+            overflow: hidden;
+            position: relative;
+        }
+
+
+        .phone-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 35px;
+        }
+
+        .phone-content {
+            padding: 20px;
+            height: 100%;
+            background: linear-gradient(to bottom, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        .phone-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-top: 30px;
+        }
+
+        .phone-back {
+            font-size: 18px;
+            color: #64748b;
+        }
+
+        .phone-menu {
+            font-size: 18px;
+            color: #64748b;
+        }
+
+        .balance-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .balance-amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+
+        .balance-tabs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .balance-tab {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .balance-tab.active {
+            background: #2585e5;
+            color: white;
+        }
+
+        .balance-tab.inactive {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .chart-section {
+            margin: 20px 0;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .chart-period {
+            color: #2585e5;
+            font-size: 0.9rem;
+        }
+
+        .chart-amount {
+            background: #dcfce7;
+            color: #16a34a;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .chart-visual {
+            height: 80px;
+            background: linear-gradient(135deg, #2585e5 0%, #084796 100%);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-visual::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,60 Q50,20 100,30 T200,25 L200,60 Z' fill='rgba(255,255,255,0.3)'/%3E%3C/svg%3E") no-repeat center bottom;
+            background-size: cover;
+        }
+
+        .credit-limit {
+            background: #2585e5;
+            color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .credit-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .credit-circle {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .categories-section {
+            margin-top: 20px;
+        }
+
+        .categories-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .category-item {
+            text-align: center;
+            padding: 15px 10px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .category-icon {
+            width: 30px;
+            height: 30px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .category-name {
+            font-size: 0.8rem;
+            color: #1e293b;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .category-amount {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Background decorative phone */
+        .bg-phone {
+            position: absolute;
+            right: -50px;
+            top: 50px;
+            width: 250px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 35px;
+            z-index: 5;
+            transform: rotate(15deg);
+        }
+
+        /* Leaderboard Section */
+        .leaderboard-section {
+            padding: 80px 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .leaderboard-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #fff;
+        }
+
+        .leaderboard-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .leaderboard-item {
+            display: grid;
+            grid-template-columns: 80px 1fr 120px;
+            align-items: center;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .leaderboard-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .leaderboard-header {
+            background: rgba(255, 255, 255, 0.15);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .leaderboard-header:hover {
+            transform: none;
+        }
+
+        .leaderboard-item.gold {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0.1) 100%);
+            border: 2px solid rgba(255, 215, 0, 0.4);
+        }
+
+        .leaderboard-item.silver {
+            background: linear-gradient(135deg, rgba(192, 192, 192, 0.2) 0%, rgba(192, 192, 192, 0.1) 100%);
+            border: 2px solid rgba(192, 192, 192, 0.4);
+        }
+
+        .leaderboard-item.bronze {
+            background: linear-gradient(135deg, rgba(205, 127, 50, 0.2) 0%, rgba(205, 127, 50, 0.1) 100%);
+            border: 2px solid rgba(205, 127, 50, 0.4);
+        }
+
+        .rank {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .player-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .player-country {
+            font-size: 1.5rem;
+        }
+
+        .score {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            text-align: right;
+        }
+
+        /* Footer Section */
+        .footer {
+            padding: 60px 0 40px;
+            position: relative;
+            z-index: 10;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .footer-logo-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+        }
+
+        .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .footer-link:hover {
+            color: #fff;
+        }
+
+        .footer-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #fff;
+            transition: width 0.3s ease;
+        }
+
+        .footer-link:hover::after {
+            width: 100%;
+        }
+
+        .footer-copyright {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Responsive design */
+        @media (max-width: 1200px) {
+            .container {
+                padding: 0 30px;
+            }
+            
+            .hero-content {
+                gap: 4rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                text-align: center;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .phone-mockup {
+                width: 280px;
+                height: 560px;
+            }
+
+            .download-buttons {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .bg-phone {
+                display: none;
+            }
+
+            .leaderboard-title {
+                font-size: 2rem;
+            }
+
+            .leaderboard-card {
+                padding: 1.5rem;
+            }
+
+            .leaderboard-item {
+                grid-template-columns: 60px 1fr 100px;
+                padding: 1rem;
+            }
+
+            .rank {
+                font-size: 1.2rem;
+            }
+
+            .player-name {
+                font-size: 1rem;
+            }
+
+            .score {
+                font-size: 1rem;
+            }
+
+            .footer-links {
+                gap: 1.5rem;
+            }
+
+            .footer-brand {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .phone-mockup {
+                width: 240px;
+                height: 480px;
+            }
+
+            .download-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.8rem;
+            }
+            
+            .store-button {
+                width: 100%;
+                max-width: 200px;
+                justify-content: center;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .footer-link {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="decoration"></div>
+    <div class="decoration"></div>
+    <div class="decoration"></div>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <div class="hero-badge">
+                        <img src="assets/icon.png" alt="Super Bump Ball" class="logo-icon">
+                        Super Bump Ball
+                    </div>
+
+                    <h1 class="hero-title">Super Bump Ball: Bounce, score, win!</h1>
+
+                    <p class="hero-description">
+                        Super Bump Ball is an addictive arcade game that challenges your reflexes and skills! Bounce your way through exciting levels, score big, and compete with players worldwide.
+                    </p>
+
+
+                    <div class="user-stats">
+                        <div class="user-description">The ultimate arcade experience, played by gamers worldwide</div>
+                    </div>
+
+                    <div class="download-buttons">
+                        <a href="https://apps.apple.com/app/apple-store/id6746660488?pt=127854166&ct=superraffle.app&mt=8" class="store-button">
+                            <img src="assets/applestore.png" alt="Download on the App Store" style="height: 40px; width: auto;">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="hero-right">
+                    <div class="bg-phone"></div>
+                    <div class="phone-mockup">
+                        <div class="phone-screen">
+                            <video id="gameVideo" src="assets/ScreenRecording.mp4" class="phone-video" loop playsinline style="width: 100%; height: 100%; object-fit: cover; border-radius: 35px;"></video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section class="leaderboard-section">
+        <div class="container">
+            <h2 class="leaderboard-title">🏆 Top 10 Global Players</h2>
+            <div class="leaderboard-card">
+                <div class="leaderboard-item leaderboard-header">
+                    <div class="rank">Rank</div>
+                    <div class="player-info">Player</div>
+                    <div class="score">Score</div>
+                </div>
+                <div class="leaderboard-item gold">
+                    <div class="rank">1</div>
+                    <div class="player-info">
+                        <span class="player-name">ProGamer99</span>
+                        <span class="player-country">🇺🇸</span>
+                    </div>
+                    <div class="score">999</div>
+                </div>
+                <div class="leaderboard-item silver">
+                    <div class="rank">2</div>
+                    <div class="player-info">
+                        <span class="player-name">BallMaster</span>
+                        <span class="player-country">🇬🇧</span>
+                    </div>
+                    <div class="score">987</div>
+                </div>
+                <div class="leaderboard-item bronze">
+                    <div class="rank">3</div>
+                    <div class="player-info">
+                        <span class="player-name">SpeedDemon</span>
+                        <span class="player-country">🇯🇵</span>
+                    </div>
+                    <div class="score">965</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank">4</div>
+                    <div class="player-info">
+                        <span class="player-name">NinjaPlayer</span>
+                        <span class="player-country">🇰🇷</span>
+                    </div>
+                    <div class="score">943</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank">5</div>
+                    <div class="player-info">
+                        <span class="player-name">LegendKiller</span>
+                        <span class="player-country">🇧🇷</span>
+                    </div>
+                    <div class="score">921</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank">6</div>
+                    <div class="player-info">
+                        <span class="player-name">ArcadeKing</span>
+                        <span class="player-country">🇩🇪</span>
+                    </div>
+                    <div class="score">898</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank">7</div>
+                    <div class="player-info">
+                        <span class="player-name">BounceQueen</span>
+                        <span class="player-country">🇫🇷</span>
+                    </div>
+                    <div class="score">876</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank">8</div>
+                    <div class="player-info">
+                        <span class="player-name">PixelWarrior</span>
+                        <span class="player-country">🇨🇦</span>
+                    </div>
+                    <div class="score">854</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank">9</div>
+                    <div class="player-info">
+                        <span class="player-name">FlashGamer</span>
+                        <span class="player-country">🇦🇺</span>
+                    </div>
+                    <div class="score">832</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank">10</div>
+                    <div class="player-info">
+                        <span class="player-name">ChampionX</span>
+                        <span class="player-country">🇲🇽</span>
+                    </div>
+                    <div class="score">810</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="assets/icon.png" alt="Super Bump Ball" class="footer-logo-img">
+                    <span class="footer-brand">Super Bump Ball</span>
+                </div>
+                <div class="footer-links">
+                    <a href="privacy/" class="footer-link">Privacy Policy</a>
+                    <a href="support/" class="footer-link">Support</a>
+                    <a href="terms/" class="footer-link">Terms of Service</a>
+                </div>
+                <div class="footer-copyright">
+                    <p>&copy; 2025 Super Bump Ball. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyDHPH0AeFA_eXg_ZVnsIFL4liDmkTT7f3U",
+    authDomain: "superraffle-site.firebaseapp.com",
+    projectId: "superraffle-site",
+    storageBucket: "superraffle-site.firebasestorage.app",
+    messagingSenderId: "597330363226",
+    appId: "1:597330363226:web:9c762289f19fd433996963",
+    measurementId: "G-8GY2SDBWY1"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+<script>
+  // Auto-play video with sound
+  document.addEventListener('DOMContentLoaded', function() {
+    const video = document.getElementById('gameVideo');
+
+    if (video) {
+      video.muted = false;
+      video.volume = 1.0;
+
+      // Try to play with sound immediately
+      video.play().catch(err => {
+        // If blocked, mute and play, then unmute on interaction
+        video.muted = true;
+        video.play();
+
+        function unmute() {
+          video.muted = false;
+          video.volume = 1.0;
+        }
+
+        ['click', 'touchstart'].forEach(event => {
+          document.addEventListener(event, unmute, { once: true });
+        });
+      });
+    }
+  });
+</script>
+</body>
+</html>
