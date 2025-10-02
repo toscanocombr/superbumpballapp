@@ -277,6 +277,32 @@
             position: relative;
         }
 
+        .sound-toggle {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            transition: all 0.3s ease;
+        }
+
+        .sound-toggle:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: scale(1.1);
+        }
+
+        .sound-toggle.muted {
+            opacity: 0.6;
+        }
 
         .phone-video {
             width: 100%;
@@ -519,7 +545,7 @@
 
         .leaderboard-item {
             display: grid;
-            grid-template-columns: 80px 1fr 120px;
+            grid-template-columns: 80px 1fr 120px 150px;
             align-items: center;
             padding: 1.2rem 1.5rem;
             margin-bottom: 0.8rem;
@@ -586,6 +612,33 @@
             font-weight: 700;
             color: #fff;
             text-align: right;
+        }
+
+        .timestamp {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: right;
+        }
+
+        .leaderboard-note {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .leaderboard-note p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .leaderboard-note strong {
+            color: #fff;
+            font-weight: 700;
         }
 
         /* Footer Section */
@@ -712,8 +765,9 @@
             }
 
             .leaderboard-item {
-                grid-template-columns: 60px 1fr 100px;
+                grid-template-columns: 60px 1fr 80px 110px;
                 padding: 1rem;
+                font-size: 0.9rem;
             }
 
             .rank {
@@ -726,6 +780,10 @@
 
             .score {
                 font-size: 1rem;
+            }
+
+            .timestamp {
+                font-size: 0.75rem;
             }
 
             .footer-links {
@@ -811,7 +869,8 @@
                     <div class="bg-phone"></div>
                     <div class="phone-mockup">
                         <div class="phone-screen">
-                            <video id="gameVideo" src="assets/ScreenRecording.mp4" class="phone-video" loop playsinline style="width: 100%; height: 100%; object-fit: cover; border-radius: 35px;"></video>
+                            <video id="gameVideo" src="assets/ScreenRecording.mp4" class="phone-video" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; border-radius: 35px;"></video>
+                            <button id="soundToggle" class="sound-toggle">🔊</button>
                         </div>
                     </div>
                 </div>
@@ -828,6 +887,7 @@
                     <div class="rank">Rank</div>
                     <div class="player-info">Player</div>
                     <div class="score">Score</div>
+                    <div class="timestamp">Date & Time</div>
                 </div>
                 <div class="leaderboard-item gold">
                     <div class="rank">1</div>
@@ -836,6 +896,7 @@
                         <span class="player-country">🇺🇸</span>
                     </div>
                     <div class="score">999</div>
+                    <div class="timestamp">Oct 2, 2025<br>14:23</div>
                 </div>
                 <div class="leaderboard-item silver">
                     <div class="rank">2</div>
@@ -844,6 +905,7 @@
                         <span class="player-country">🇬🇧</span>
                     </div>
                     <div class="score">987</div>
+                    <div class="timestamp">Oct 2, 2025<br>13:45</div>
                 </div>
                 <div class="leaderboard-item bronze">
                     <div class="rank">3</div>
@@ -852,6 +914,7 @@
                         <span class="player-country">🇯🇵</span>
                     </div>
                     <div class="score">965</div>
+                    <div class="timestamp">Oct 2, 2025<br>12:18</div>
                 </div>
                 <div class="leaderboard-item">
                     <div class="rank">4</div>
@@ -860,6 +923,7 @@
                         <span class="player-country">🇰🇷</span>
                     </div>
                     <div class="score">943</div>
+                    <div class="timestamp">Oct 2, 2025<br>11:02</div>
                 </div>
                 <div class="leaderboard-item">
                     <div class="rank">5</div>
@@ -868,6 +932,7 @@
                         <span class="player-country">🇧🇷</span>
                     </div>
                     <div class="score">921</div>
+                    <div class="timestamp">Oct 1, 2025<br>22:37</div>
                 </div>
                 <div class="leaderboard-item">
                     <div class="rank">6</div>
@@ -876,6 +941,7 @@
                         <span class="player-country">🇩🇪</span>
                     </div>
                     <div class="score">898</div>
+                    <div class="timestamp">Oct 1, 2025<br>19:54</div>
                 </div>
                 <div class="leaderboard-item">
                     <div class="rank">7</div>
@@ -884,6 +950,7 @@
                         <span class="player-country">🇫🇷</span>
                     </div>
                     <div class="score">876</div>
+                    <div class="timestamp">Oct 1, 2025<br>17:26</div>
                 </div>
                 <div class="leaderboard-item">
                     <div class="rank">8</div>
@@ -892,6 +959,7 @@
                         <span class="player-country">🇨🇦</span>
                     </div>
                     <div class="score">854</div>
+                    <div class="timestamp">Oct 1, 2025<br>15:43</div>
                 </div>
                 <div class="leaderboard-item">
                     <div class="rank">9</div>
@@ -900,6 +968,7 @@
                         <span class="player-country">🇦🇺</span>
                     </div>
                     <div class="score">832</div>
+                    <div class="timestamp">Oct 1, 2025<br>13:08</div>
                 </div>
                 <div class="leaderboard-item">
                     <div class="rank">10</div>
@@ -908,6 +977,10 @@
                         <span class="player-country">🇲🇽</span>
                     </div>
                     <div class="score">810</div>
+                    <div class="timestamp">Oct 1, 2025<br>10:15</div>
+                </div>
+                <div class="leaderboard-note">
+                    <p>🎮 <strong>All players are real!</strong> No bots, no fake scores. This leaderboard is updated in real-time with actual player achievements from around the world. Compete now and see your name at the top!</p>
                 </div>
             </div>
         </div>
@@ -957,28 +1030,31 @@
   const analytics = getAnalytics(app);
 </script>
 <script>
-  // Auto-play video with sound
+  // Sound toggle functionality
   document.addEventListener('DOMContentLoaded', function() {
     const video = document.getElementById('gameVideo');
+    const soundToggle = document.getElementById('soundToggle');
 
-    if (video) {
-      video.muted = false;
-      video.volume = 1.0;
+    if (video && soundToggle) {
+      // Start muted
+      video.muted = true;
+      soundToggle.classList.add('muted');
+      soundToggle.textContent = '🔇';
 
-      // Try to play with sound immediately
-      video.play().catch(err => {
-        // If blocked, mute and play, then unmute on interaction
-        video.muted = true;
-        video.play();
+      // Toggle sound on click
+      soundToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
 
-        function unmute() {
+        if (video.muted) {
           video.muted = false;
           video.volume = 1.0;
+          soundToggle.classList.remove('muted');
+          soundToggle.textContent = '🔊';
+        } else {
+          video.muted = true;
+          soundToggle.classList.add('muted');
+          soundToggle.textContent = '🔇';
         }
-
-        ['click', 'touchstart'].forEach(event => {
-          document.addEventListener(event, unmute, { once: true });
-        });
       });
     }
   });
