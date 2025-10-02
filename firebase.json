@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "superbumpball",
     "public": ".",
     "ignore": [
       "firebase.json",
