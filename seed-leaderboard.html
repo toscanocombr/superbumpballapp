@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Leaderboard - Super Bump Ball</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 3rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        button {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 16px 24px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        button:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #status {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            min-height: 100px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+
+        .log {
+            margin-bottom: 0.5rem;
+        }
+
+        .log.success {
+            color: #4ade80;
+        }
+
+        .log.error {
+            color: #f87171;
+        }
+
+        .log.info {
+            color: #60a5fa;
+        }
+
+        .warning {
+            background: rgba(251, 191, 36, 0.2);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Seed Leaderboard Data</h1>
+        <p>Este script irá adicionar dados de teste ao seu leaderboard do Firestore. Use apenas para desenvolvimento!</p>
+
+        <div class="warning">
+            ⚠️ <strong>Atenção:</strong> Certifique-se de que o Firestore está ativado no Firebase Console antes de continuar.
+        </div>
+
+        <button id="seedButton" onclick="seedLeaderboard()">🚀 Adicionar Dados de Teste</button>
+        <button id="clearButton" onclick="clearLeaderboard()">🗑️ Limpar Leaderboard</button>
+
+        <div id="status"></div>
+    </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBilKt7DM52u1CAIGOwnTVCo5VE-0QhncE",
+    authDomain: "superbumpball.firebaseapp.com",
+    projectId: "superbumpball",
+    storageBucket: "superbumpball.firebasestorage.app",
+    messagingSenderId: "1045794945603",
+    appId: "1:1045794945603:web:0e95eebe7e910db9d9f2f6",
+    measurementId: "G-DFFN06RG45"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Test data for leaderboard
+  const testPlayers = [
+    { name: "ProGamer99", country: "🇺🇸", score: 999, timestamp: Date.now() - 1000 * 60 * 60 * 2 },
+    { name: "BallMaster", country: "🇬🇧", score: 987, timestamp: Date.now() - 1000 * 60 * 60 * 3 },
+    { name: "SpeedDemon", country: "🇯🇵", score: 965, timestamp: Date.now() - 1000 * 60 * 60 * 5 },
+    { name: "NinjaPlayer", country: "🇰🇷", score: 943, timestamp: Date.now() - 1000 * 60 * 60 * 7 },
+    { name: "LegendKiller", country: "🇧🇷", score: 921, timestamp: Date.now() - 1000 * 60 * 60 * 24 },
+    { name: "ArcadeKing", country: "🇩🇪", score: 898, timestamp: Date.now() - 1000 * 60 * 60 * 28 },
+    { name: "BounceQueen", country: "🇫🇷", score: 876, timestamp: Date.now() - 1000 * 60 * 60 * 32 },
+    { name: "PixelWarrior", country: "🇨🇦", score: 854, timestamp: Date.now() - 1000 * 60 * 60 * 36 },
+    { name: "FlashGamer", country: "🇦🇺", score: 832, timestamp: Date.now() - 1000 * 60 * 60 * 42 },
+    { name: "ChampionX", country: "🇲🇽", score: 810, timestamp: Date.now() - 1000 * 60 * 60 * 48 }
+  ];
+
+  function addLog(message, type = 'info') {
+    const statusDiv = document.getElementById('status');
+    const log = document.createElement('div');
+    log.className = `log ${type}`;
+    log.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+    statusDiv.appendChild(log);
+    statusDiv.scrollTop = statusDiv.scrollHeight;
+  }
+
+  async function seedLeaderboard() {
+    const button = document.getElementById('seedButton');
+    button.disabled = true;
+
+    try {
+      addLog('🚀 Iniciando seed do leaderboard...', 'info');
+
+      const leaderboardRef = collection(db, 'leaderboard');
+
+      for (let i = 0; i < testPlayers.length; i++) {
+        const player = testPlayers[i];
+        addLog(`Adicionando: ${player.name} (${player.score} pts)`, 'info');
+
+        await addDoc(leaderboardRef, {
+          name: player.name,
+          country: player.country,
+          score: player.score,
+          timestamp: player.timestamp
+        });
+
+        // Small delay to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
+      addLog('✅ Leaderboard populado com sucesso!', 'success');
+      addLog(`📊 ${testPlayers.length} jogadores adicionados`, 'success');
+      addLog('🔗 Abra index.html para ver o resultado', 'info');
+
+    } catch (error) {
+      addLog(`❌ Erro: ${error.message}`, 'error');
+      console.error('Error seeding leaderboard:', error);
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  async function clearLeaderboard() {
+    if (!confirm('Tem certeza que deseja limpar todos os dados do leaderboard?')) {
+      return;
+    }
+
+    const button = document.getElementById('clearButton');
+    button.disabled = true;
+
+    try {
+      addLog('🗑️ Limpando leaderboard...', 'info');
+
+      const leaderboardRef = collection(db, 'leaderboard');
+      const querySnapshot = await getDocs(leaderboardRef);
+
+      let count = 0;
+      for (const docSnapshot of querySnapshot.docs) {
+        await deleteDoc(doc(db, 'leaderboard', docSnapshot.id));
+        count++;
+        addLog(`Removido: ${count} de ${querySnapshot.size}`, 'info');
+      }
+
+      addLog('✅ Leaderboard limpo com sucesso!', 'success');
+      addLog(`🗑️ ${count} registros removidos`, 'success');
+
+    } catch (error) {
+      addLog(`❌ Erro: ${error.message}`, 'error');
+      console.error('Error clearing leaderboard:', error);
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  // Make functions available globally
+  window.seedLeaderboard = seedLeaderboard;
+  window.clearLeaderboard = clearLeaderboard;
+  window.db = db;
+
+  // Initial log
+  addLog('✅ Firebase conectado com sucesso!', 'success');
+  addLog('👉 Clique em "Adicionar Dados de Teste" para popular o leaderboard', 'info');
+</script>
+</body>
+</html>

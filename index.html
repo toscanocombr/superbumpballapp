@@ -218,8 +218,9 @@
         /* Download buttons */
         .download-buttons {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             margin-top: 2rem;
+            align-items: center;
         }
 
         .store-button {
@@ -247,6 +248,18 @@
         .store-icon {
             width: 24px;
             height: 24px;
+        }
+
+        .qrcode-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 72px;
+        }
+
+        .qrcode-img {
+            height: 72px;
+            width: auto;
         }
 
         /* Phone mockup section */
@@ -752,6 +765,10 @@
                 flex-wrap: wrap;
             }
 
+            .qrcode-img {
+                height: 60px;
+            }
+
             .bg-phone {
                 display: none;
             }
@@ -814,11 +831,15 @@
                 align-items: center;
                 gap: 0.8rem;
             }
-            
+
             .store-button {
                 width: 100%;
                 max-width: 200px;
                 justify-content: center;
+            }
+
+            .qrcode-img {
+                height: 50px;
             }
 
             .footer-links {
@@ -862,6 +883,9 @@
                         <a href="https://apps.apple.com/app/apple-store/id6746660488?pt=127854166&ct=superraffle.app&mt=8" class="store-button">
                             <img src="assets/applestore.png" alt="Download on the App Store" style="height: 40px; width: auto;">
                         </a>
+                        <div class="qrcode-container">
+                            <img src="assets/qrcode.png" alt="Scan QR Code to Download" class="qrcode-img">
+                        </div>
                     </div>
                 </div>
 
@@ -889,95 +913,9 @@
                     <div class="score">Score</div>
                     <div class="timestamp">Date & Time</div>
                 </div>
-                <div class="leaderboard-item gold">
-                    <div class="rank">1</div>
-                    <div class="player-info">
-                        <span class="player-name">ProGamer99</span>
-                        <span class="player-country">🇺🇸</span>
-                    </div>
-                    <div class="score">999</div>
-                    <div class="timestamp">Oct 2, 2025<br>14:23</div>
-                </div>
-                <div class="leaderboard-item silver">
-                    <div class="rank">2</div>
-                    <div class="player-info">
-                        <span class="player-name">BallMaster</span>
-                        <span class="player-country">🇬🇧</span>
-                    </div>
-                    <div class="score">987</div>
-                    <div class="timestamp">Oct 2, 2025<br>13:45</div>
-                </div>
-                <div class="leaderboard-item bronze">
-                    <div class="rank">3</div>
-                    <div class="player-info">
-                        <span class="player-name">SpeedDemon</span>
-                        <span class="player-country">🇯🇵</span>
-                    </div>
-                    <div class="score">965</div>
-                    <div class="timestamp">Oct 2, 2025<br>12:18</div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="rank">4</div>
-                    <div class="player-info">
-                        <span class="player-name">NinjaPlayer</span>
-                        <span class="player-country">🇰🇷</span>
-                    </div>
-                    <div class="score">943</div>
-                    <div class="timestamp">Oct 2, 2025<br>11:02</div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="rank">5</div>
-                    <div class="player-info">
-                        <span class="player-name">LegendKiller</span>
-                        <span class="player-country">🇧🇷</span>
-                    </div>
-                    <div class="score">921</div>
-                    <div class="timestamp">Oct 1, 2025<br>22:37</div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="rank">6</div>
-                    <div class="player-info">
-                        <span class="player-name">ArcadeKing</span>
-                        <span class="player-country">🇩🇪</span>
-                    </div>
-                    <div class="score">898</div>
-                    <div class="timestamp">Oct 1, 2025<br>19:54</div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="rank">7</div>
-                    <div class="player-info">
-                        <span class="player-name">BounceQueen</span>
-                        <span class="player-country">🇫🇷</span>
-                    </div>
-                    <div class="score">876</div>
-                    <div class="timestamp">Oct 1, 2025<br>17:26</div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="rank">8</div>
-                    <div class="player-info">
-                        <span class="player-name">PixelWarrior</span>
-                        <span class="player-country">🇨🇦</span>
-                    </div>
-                    <div class="score">854</div>
-                    <div class="timestamp">Oct 1, 2025<br>15:43</div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="rank">9</div>
-                    <div class="player-info">
-                        <span class="player-name">FlashGamer</span>
-                        <span class="player-country">🇦🇺</span>
-                    </div>
-                    <div class="score">832</div>
-                    <div class="timestamp">Oct 1, 2025<br>13:08</div>
-                </div>
-                <div class="leaderboard-item">
-                    <div class="rank">10</div>
-                    <div class="player-info">
-                        <span class="player-name">ChampionX</span>
-                        <span class="player-country">🇲🇽</span>
-                    </div>
-                    <div class="score">810</div>
-                    <div class="timestamp">Oct 1, 2025<br>10:15</div>
+                <!-- Leaderboard items will be loaded dynamically from Firestore -->
+                <div id="leaderboard-loading" style="text-align: center; padding: 2rem; color: rgba(255, 255, 255, 0.6);">
+                    Loading leaderboard...
                 </div>
                 <div class="leaderboard-note">
                     <p>🎮 <strong>All players are real!</strong> No bots, no fake scores. This leaderboard is updated in real-time with actual player achievements from around the world. Compete now and see your name at the top!</p>
@@ -1010,11 +948,9 @@
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+  import { getFirestore, collection, getDocs, addDoc, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
   // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
     apiKey: "AIzaSyBilKt7DM52u1CAIGOwnTVCo5VE-0QhncE",
     authDomain: "superbumpball.firebaseapp.com",
@@ -1028,6 +964,106 @@
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
+  const db = getFirestore(app);
+
+  // Function to load leaderboard from Firestore with real-time updates
+  function loadLeaderboard() {
+    try {
+      const leaderboardRef = collection(db, 'leaderboard');
+      const q = query(leaderboardRef, orderBy('score', 'desc'), limit(10));
+
+      // Listen to real-time updates
+      onSnapshot(q, (querySnapshot) => {
+        const leaderboardData = [];
+        querySnapshot.forEach((doc) => {
+          leaderboardData.push({ id: doc.id, ...doc.data() });
+        });
+
+        // Update the leaderboard UI
+        updateLeaderboardUI(leaderboardData);
+      }, (error) => {
+        console.error('Error loading leaderboard:', error);
+      });
+    } catch (error) {
+      console.error('Error setting up leaderboard listener:', error);
+    }
+  }
+
+  // Function to update the leaderboard UI
+  function updateLeaderboardUI(data) {
+    const leaderboardContainer = document.querySelector('.leaderboard-card');
+    if (!leaderboardContainer) return;
+
+    // Remove loading indicator
+    const loading = document.getElementById('leaderboard-loading');
+    if (loading) loading.remove();
+
+    // Keep the header and note
+    const header = leaderboardContainer.querySelector('.leaderboard-header');
+    const note = leaderboardContainer.querySelector('.leaderboard-note');
+
+    // Clear all items except header and note
+    const items = leaderboardContainer.querySelectorAll('.leaderboard-item:not(.leaderboard-header)');
+    items.forEach(item => item.remove());
+
+    // If no data, show message
+    if (data.length === 0) {
+      const emptyHTML = `
+        <div style="text-align: center; padding: 2rem; color: rgba(255, 255, 255, 0.6);">
+          No players yet. Be the first to play!
+        </div>
+      `;
+      if (note) {
+        note.insertAdjacentHTML('beforebegin', emptyHTML);
+      }
+      return;
+    }
+
+    // Add new items from Firestore
+    data.forEach((player, index) => {
+      const rank = index + 1;
+      let itemClass = 'leaderboard-item';
+
+      if (rank === 1) itemClass += ' gold';
+      else if (rank === 2) itemClass += ' silver';
+      else if (rank === 3) itemClass += ' bronze';
+
+      const timestamp = player.timestamp ? new Date(player.timestamp).toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).replace(',', '<br>') : '';
+
+      const itemHTML = `
+        <div class="${itemClass}">
+          <div class="rank">${rank}</div>
+          <div class="player-info">
+            <span class="player-name">${player.name || 'Player'}</span>
+            <span class="player-country">${player.country || '🌍'}</span>
+          </div>
+          <div class="score">${player.score || 0}</div>
+          <div class="timestamp">${timestamp}</div>
+        </div>
+      `;
+
+      if (note) {
+        note.insertAdjacentHTML('beforebegin', itemHTML);
+      } else {
+        leaderboardContainer.insertAdjacentHTML('beforeend', itemHTML);
+      }
+    });
+  }
+
+  // Load leaderboard when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    loadLeaderboard();
+  });
+
+  // Make functions available globally for testing
+  window.db = db;
+  window.loadLeaderboard = loadLeaderboard;
 </script>
 <script>
   // Sound toggle functionality
