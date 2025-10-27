@@ -270,8 +270,24 @@
       users.sort((a, b) => b.score - a.score);
 
       users.forEach((user) => {
-        const date = new Date(user.timestamp);
-        const formattedDate = date.toLocaleString('pt-BR');
+        // Handle both Firestore Timestamp objects and regular timestamps
+        let formattedDate = 'N/A';
+        if (user.timestamp) {
+          try {
+            // Check if it's a Firestore Timestamp object
+            const date = user.timestamp.toDate ? user.timestamp.toDate() : new Date(user.timestamp);
+            formattedDate = date.toLocaleString('pt-BR', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit'
+            });
+          } catch (error) {
+            formattedDate = 'Invalid Date';
+          }
+        }
 
         addLog(`───────────────────────────────────────────`, 'info');
         addLog(`🏆 RANK #${rank}`, 'success');
