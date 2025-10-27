@@ -147,16 +147,16 @@
 
   // Test data for leaderboard
   const testPlayers = [
-    { name: "ProGamer99", country: "🇺🇸", score: 999, timestamp: Date.now() - 1000 * 60 * 60 * 2 },
-    { name: "BallMaster", country: "🇬🇧", score: 987, timestamp: Date.now() - 1000 * 60 * 60 * 3 },
-    { name: "SpeedDemon", country: "🇯🇵", score: 965, timestamp: Date.now() - 1000 * 60 * 60 * 5 },
-    { name: "NinjaPlayer", country: "🇰🇷", score: 943, timestamp: Date.now() - 1000 * 60 * 60 * 7 },
-    { name: "LegendKiller", country: "🇧🇷", score: 921, timestamp: Date.now() - 1000 * 60 * 60 * 24 },
-    { name: "ArcadeKing", country: "🇩🇪", score: 898, timestamp: Date.now() - 1000 * 60 * 60 * 28 },
-    { name: "BounceQueen", country: "🇫🇷", score: 876, timestamp: Date.now() - 1000 * 60 * 60 * 32 },
-    { name: "PixelWarrior", country: "🇨🇦", score: 854, timestamp: Date.now() - 1000 * 60 * 60 * 36 },
-    { name: "FlashGamer", country: "🇦🇺", score: 832, timestamp: Date.now() - 1000 * 60 * 60 * 42 },
-    { name: "ChampionX", country: "🇲🇽", score: 810, timestamp: Date.now() - 1000 * 60 * 60 * 48 }
+    { playerName: "ProGamer99", email: "progamer99@game.com", country: "United States", score: 999, timestamp: Date.now() - 1000 * 60 * 60 * 2 },
+    { playerName: "BallMaster", email: "ballmaster@game.com", country: "United Kingdom", score: 987, timestamp: Date.now() - 1000 * 60 * 60 * 3 },
+    { playerName: "SpeedDemon", email: "speeddemon@game.com", country: "Japan", score: 965, timestamp: Date.now() - 1000 * 60 * 60 * 5 },
+    { playerName: "NinjaPlayer", email: "ninjaplayer@game.com", country: "South Korea", score: 943, timestamp: Date.now() - 1000 * 60 * 60 * 7 },
+    { playerName: "LegendKiller", email: "legendkiller@game.com", country: "Brazil", score: 921, timestamp: Date.now() - 1000 * 60 * 60 * 24 },
+    { playerName: "ArcadeKing", email: "arcadeking@game.com", country: "Germany", score: 898, timestamp: Date.now() - 1000 * 60 * 60 * 28 },
+    { playerName: "BounceQueen", email: "bouncequeen@game.com", country: "France", score: 876, timestamp: Date.now() - 1000 * 60 * 60 * 32 },
+    { playerName: "PixelWarrior", email: "pixelwarrior@game.com", country: "Canada", score: 854, timestamp: Date.now() - 1000 * 60 * 60 * 36 },
+    { playerName: "FlashGamer", email: "flashgamer@game.com", country: "Australia", score: 832, timestamp: Date.now() - 1000 * 60 * 60 * 42 },
+    { playerName: "ChampionX", email: "championx@game.com", country: "Mexico", score: 810, timestamp: Date.now() - 1000 * 60 * 60 * 48 }
   ];
 
   function addLog(message, type = 'info') {
@@ -179,10 +179,11 @@
 
       for (let i = 0; i < testPlayers.length; i++) {
         const player = testPlayers[i];
-        addLog(`Adicionando: ${player.name} (${player.score} pts)`, 'info');
+        addLog(`Adicionando: ${player.playerName} (${player.score} pts)`, 'info');
 
         await addDoc(leaderboardRef, {
-          name: player.name,
+          playerName: player.playerName,
+          email: player.email,
           country: player.country,
           score: player.score,
           timestamp: player.timestamp
@@ -274,8 +275,9 @@
 
         addLog(`───────────────────────────────────────────`, 'info');
         addLog(`🏆 RANK #${rank}`, 'success');
-        addLog(`👤 Nome: ${user.name}`, 'info');
-        addLog(`${user.country} País: ${user.country}`, 'info');
+        addLog(`👤 Nome: ${user.playerName}`, 'info');
+        addLog(`📧 Email: ${user.email}`, 'info');
+        addLog(`🌍 País: ${user.country}`, 'info');
         addLog(`🎯 Pontuação: ${user.score}`, 'info');
         addLog(`🕒 Data/Hora: ${formattedDate}`, 'info');
         addLog(`🔑 ID do Documento: ${user.id}`, 'info');
