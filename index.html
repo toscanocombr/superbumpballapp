@@ -556,6 +556,30 @@
             margin: 0 auto;
         }
 
+        .leaderboard-items-container {
+            max-height: 600px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .leaderboard-items-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .leaderboard-items-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .leaderboard-items-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .leaderboard-items-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
         .leaderboard-item {
             display: grid;
             grid-template-columns: 80px 1fr 120px 150px;
@@ -905,7 +929,7 @@
     <!-- Leaderboard Section -->
     <section class="leaderboard-section">
         <div class="container">
-            <h2 class="leaderboard-title">🏆 Top 10 Global Players</h2>
+            <h2 class="leaderboard-title">🏆 Global Players</h2>
             <div class="leaderboard-card">
                 <div class="leaderboard-item leaderboard-header">
                     <div class="rank">Rank</div>
@@ -913,9 +937,11 @@
                     <div class="score">Score</div>
                     <div class="timestamp">Date & Time</div>
                 </div>
-                <!-- Leaderboard items will be loaded dynamically from Firestore -->
-                <div id="leaderboard-loading" style="text-align: center; padding: 2rem; color: rgba(255, 255, 255, 0.6);">
-                    Loading leaderboard...
+                <div class="leaderboard-items-container">
+                    <!-- Leaderboard items will be loaded dynamically from Firestore -->
+                    <div id="leaderboard-loading" style="text-align: center; padding: 2rem; color: rgba(255, 255, 255, 0.6);">
+                        Loading leaderboard...
+                    </div>
                 </div>
                 <div class="leaderboard-note">
                     <p>🎮 <strong>All players are real!</strong> No bots, no fake scores. This leaderboard is updated in real-time with actual player achievements from around the world. Compete now and see your name at the top!</p>
@@ -970,7 +996,7 @@
   function loadLeaderboard() {
     try {
       const leaderboardRef = collection(db, 'leaderboard');
-      const q = query(leaderboardRef, orderBy('score', 'desc'), limit(10));
+      const q = query(leaderboardRef, orderBy('score', 'desc'));
 
       // Listen to real-time updates
       onSnapshot(q, (querySnapshot) => {
@@ -978,6 +1004,9 @@
         querySnapshot.forEach((doc) => {
           leaderboardData.push({ id: doc.id, ...doc.data() });
         });
+
+        // Log Firebase data
+        console.log('Firebase leaderboard data:', leaderboardData);
 
         // Update the leaderboard UI
         updateLeaderboardUI(leaderboardData);
@@ -991,33 +1020,86 @@
 
   // Function to update the leaderboard UI
   function updateLeaderboardUI(data) {
-    const leaderboardContainer = document.querySelector('.leaderboard-card');
-    if (!leaderboardContainer) return;
+    const itemsContainer = document.querySelector('.leaderboard-items-container');
+    if (!itemsContainer) return;
 
     // Remove loading indicator
     const loading = document.getElementById('leaderboard-loading');
     if (loading) loading.remove();
 
-    // Keep the header and note
-    const header = leaderboardContainer.querySelector('.leaderboard-header');
-    const note = leaderboardContainer.querySelector('.leaderboard-note');
+    // Remove any existing empty message
+    const emptyMessage = itemsContainer.querySelector('#empty-message');
+    if (emptyMessage) emptyMessage.remove();
 
-    // Clear all items except header and note
-    const items = leaderboardContainer.querySelectorAll('.leaderboard-item:not(.leaderboard-header)');
+    // Clear all items
+    const items = itemsContainer.querySelectorAll('.leaderboard-item');
     items.forEach(item => item.remove());
 
     // If no data, show message
     if (data.length === 0) {
       const emptyHTML = `
-        <div style="text-align: center; padding: 2rem; color: rgba(255, 255, 255, 0.6);">
+        <div id="empty-message" style="text-align: center; padding: 2rem; color: rgba(255, 255, 255, 0.6);">
           No players yet. Be the first to play!
         </div>
       `;
-      if (note) {
-        note.insertAdjacentHTML('beforebegin', emptyHTML);
-      }
+      itemsContainer.innerHTML = emptyHTML;
       return;
     }
+
+    // Country to flag emoji mapping
+    const countryToFlag = {
+      'United States': '🇺🇸',
+      'Brazil': '🇧🇷',
+      'United Kingdom': '🇬🇧',
+      'Canada': '🇨🇦',
+      'Germany': '🇩🇪',
+      'France': '🇫🇷',
+      'Italy': '🇮🇹',
+      'Spain': '🇪🇸',
+      'Portugal': '🇵🇹',
+      'Mexico': '🇲🇽',
+      'Argentina': '🇦🇷',
+      'Japan': '🇯🇵',
+      'China': '🇨🇳',
+      'South Korea': '🇰🇷',
+      'India': '🇮🇳',
+      'Australia': '🇦🇺',
+      'Russia': '🇷🇺',
+      'Netherlands': '🇳🇱',
+      'Sweden': '🇸🇪',
+      'Norway': '🇳🇴',
+      'Denmark': '🇩🇰',
+      'Finland': '🇫🇮',
+      'Poland': '🇵🇱',
+      'Turkey': '🇹🇷',
+      'South Africa': '🇿🇦',
+      'Egypt': '🇪🇬',
+      'Nigeria': '🇳🇬',
+      'Kenya': '🇰🇪',
+      'Chile': '🇨🇱',
+      'Colombia': '🇨🇴',
+      'Peru': '🇵🇪',
+      'Venezuela': '🇻🇪',
+      'Belgium': '🇧🇪',
+      'Switzerland': '🇨🇭',
+      'Austria': '🇦🇹',
+      'Greece': '🇬🇷',
+      'Czech Republic': '🇨🇿',
+      'Ireland': '🇮🇪',
+      'New Zealand': '🇳🇿',
+      'Singapore': '🇸🇬',
+      'Thailand': '🇹🇭',
+      'Vietnam': '🇻🇳',
+      'Philippines': '🇵🇭',
+      'Indonesia': '🇮🇩',
+      'Malaysia': '🇲🇾',
+      'Saudi Arabia': '🇸🇦',
+      'UAE': '🇦🇪',
+      'Israel': '🇮🇱',
+      'Ukraine': '🇺🇦',
+      'Romania': '🇷🇴',
+      'Hungary': '🇭🇺'
+    };
 
     // Add new items from Firestore
     data.forEach((player, index) => {
@@ -1028,31 +1110,35 @@
       else if (rank === 2) itemClass += ' silver';
       else if (rank === 3) itemClass += ' bronze';
 
-      const timestamp = player.timestamp ? new Date(player.timestamp).toLocaleString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }).replace(',', '<br>') : '';
+      // Convert Firebase timestamp to Date
+      let timestamp = '';
+      if (player.timestamp) {
+        const date = player.timestamp.toDate ? player.timestamp.toDate() : new Date(player.timestamp);
+        timestamp = date.toLocaleString('en-US', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        }).replace(',', '<br>');
+      }
+
+      // Convert country name to flag emoji
+      const countryFlag = countryToFlag[player.country] || '🌍';
 
       const itemHTML = `
         <div class="${itemClass}">
           <div class="rank">${rank}</div>
           <div class="player-info">
-            <span class="player-name">${player.name || 'Player'}</span>
-            <span class="player-country">${player.country || '🌍'}</span>
+            <span class="player-name">${player.playerName || 'Player'}</span>
+            <span class="player-country">${countryFlag}</span>
           </div>
           <div class="score">${player.score || 0}</div>
           <div class="timestamp">${timestamp}</div>
         </div>
       `;
 
-      if (note) {
-        note.insertAdjacentHTML('beforebegin', itemHTML);
-      } else {
-        leaderboardContainer.insertAdjacentHTML('beforeend', itemHTML);
-      }
+      itemsContainer.insertAdjacentHTML('beforeend', itemHTML);
     });
   }
 
