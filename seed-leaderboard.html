@@ -121,6 +121,7 @@
 
         <button id="seedButton" onclick="seedLeaderboard()">🚀 Adicionar Dados de Teste</button>
         <button id="clearButton" onclick="clearLeaderboard()">🗑️ Limpar Leaderboard</button>
+        <button id="listButton" onclick="listAllUsers()">📋 Listar Todos os Usuários</button>
 
         <div id="status"></div>
     </div>
@@ -235,9 +236,69 @@
     }
   }
 
+  async function listAllUsers() {
+    const button = document.getElementById('listButton');
+    button.disabled = true;
+
+    try {
+      addLog('📋 Buscando todos os usuários...', 'info');
+
+      const leaderboardRef = collection(db, 'leaderboard');
+      const querySnapshot = await getDocs(leaderboardRef);
+
+      if (querySnapshot.empty) {
+        addLog('⚠️ Nenhum usuário encontrado no leaderboard', 'info');
+        return;
+      }
+
+      addLog('', 'info');
+      addLog(`═══════════════════════════════════════════`, 'success');
+      addLog(`📊 TOTAL DE USUÁRIOS: ${querySnapshot.size}`, 'success');
+      addLog(`═══════════════════════════════════════════`, 'success');
+      addLog('', 'info');
+
+      let rank = 1;
+      const users = [];
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        users.push({ id: doc.id, ...data });
+      });
+
+      // Ordenar por pontuação (maior para menor)
+      users.sort((a, b) => b.score - a.score);
+
+      users.forEach((user) => {
+        const date = new Date(user.timestamp);
+        const formattedDate = date.toLocaleString('pt-BR');
+
+        addLog(`───────────────────────────────────────────`, 'info');
+        addLog(`🏆 RANK #${rank}`, 'success');
+        addLog(`👤 Nome: ${user.name}`, 'info');
+        addLog(`${user.country} País: ${user.country}`, 'info');
+        addLog(`🎯 Pontuação: ${user.score}`, 'info');
+        addLog(`🕒 Data/Hora: ${formattedDate}`, 'info');
+        addLog(`🔑 ID do Documento: ${user.id}`, 'info');
+
+        rank++;
+      });
+
+      addLog('', 'info');
+      addLog(`═══════════════════════════════════════════`, 'success');
+      addLog('✅ Listagem completa!', 'success');
+
+    } catch (error) {
+      addLog(`❌ Erro: ${error.message}`, 'error');
+      console.error('Error listing users:', error);
+    } finally {
+      button.disabled = false;
+    }
+  }
+
   // Make functions available globally
   window.seedLeaderboard = seedLeaderboard;
   window.clearLeaderboard = clearLeaderboard;
+  window.listAllUsers = listAllUsers;
   window.db = db;
 
   // Initial log
